@@ -21,10 +21,7 @@
     "url": "https://github.com/GabrielBB/react-use-session/issues"
   },
   "homepage": "https://github.com/GabrielBB/react-use-session",
-  "dependencies": {
-    "@types/react": "^16.4.18",
-    "@types/react-dom": "^16.0.9"
-  },
+  "dependencies": {},
   "devDependencies": {
     "react": "16.7.0-alpha.0",
     "react-dom": "16.7.0-alpha.0",
