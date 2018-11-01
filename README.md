@@ -1,8 +1,14 @@
-# `useSession`
 
-React hook to handle session from your browser local storage
 
-[![NPM](https://nodei.co/npm/react-use-session.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/react-use-session)
+<div align="center">
+  <h1>
+    <br/>
+    👍
+    <br />
+    react-use-session
+  </h1>
+  React hook to handle session from your browser local storage
+</div>
 
 ## Usage
 
