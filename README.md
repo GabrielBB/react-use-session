@@ -75,6 +75,12 @@ export default () => {
 }
 ```
 
-```SessionType.JWT``` tells useSession that the value returned by ```onLogin``` callback will be a Json Web Token so it needs to parse it to a Javascript Object.
+### Parameters
 
-```autoLogin``` tells useSession to call your onLogin function from the start, without calling ```login``` function
+As you can see in the example above, you can pass two optional parameters:
+
+#### type: SessionType
+Tells useSession that the value returned by ```onLogin``` callback will be a Json Web Token so it needs to parse it to a Javascript Object.
+
+#### autoLogin: boolean
+
