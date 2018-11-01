@@ -77,10 +77,8 @@ export default () => {
 
 ## Parameters
 
-As you can see in the example above, you can pass two optional parameters:
-
  - #### type: SessionType
-You can pass ```SessionType.JWT``` if you're working with a Json Web Token. The default value is ```SessionType.Object```
+    You can pass ```SessionType.JWT``` if you're working with a Json Web Token. The default value is ```SessionType.Object```
 
  - #### autoLogin: boolean
-useSession will call your ```onLogin``` callback when your app is first rendered, without need to explicitly call ```login```.
+    useSession will call your ```onLogin``` callback when your app is first rendered, without need to explicitly call ```login```.
