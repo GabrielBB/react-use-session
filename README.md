@@ -3,7 +3,7 @@
 <div align="center">
   <h1>
     <br/>
-    👍
+    👤
     <br />
     react-use-session
   </h1>
