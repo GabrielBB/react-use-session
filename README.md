@@ -2,7 +2,7 @@
 
 React hook to handle session from your browser local storage
 
-[![NPM](https://nodei.co/npm/xtate.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/react-use-session)
+[![NPM](https://nodei.co/npm/react-use-session.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/react-use-session)
 
 ## Usage
 
