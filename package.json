@@ -15,12 +15,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/GabrielBB/react-use-session.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/GabrielBB/react-use-session/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/GabrielBB/react-use-session",
   "dependencies": {
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9"
