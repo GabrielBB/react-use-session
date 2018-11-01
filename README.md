@@ -64,7 +64,7 @@ export default App;
 
 This is what this code does:
 
-// Uploading GIF later
+![Screenshot](https://u.cubeupload.com/GabrielBB/reactusesession.gif)
 
 ### JSON Web Token support
 
