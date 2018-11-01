@@ -62,8 +62,6 @@ function App() {
 export default App;
 ```
 
-This is what this code does:
-
 ![Screenshot](https://u.cubeupload.com/GabrielBB/reactusesession.gif)
 
 ### JSON Web Token support
