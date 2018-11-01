@@ -75,12 +75,12 @@ export default () => {
 }
 ```
 
-### Parameters
+## Parameters
 
 As you can see in the example above, you can pass two optional parameters:
 
-#### type: SessionType
-Tells useSession that the value returned by ```onLogin``` callback will be a Json Web Token so it needs to parse it to a Javascript Object.
+ - #### type: SessionType
+You can pass ```SessionType.JWT``` if you're working with a Json Web Token. The default value is ```SessionType.Object```
 
-#### autoLogin: boolean
-
+ - #### autoLogin: boolean
+useSession will call your ```onLogin``` callback when your app is first rendered, without need to explicitly call ```login```.
