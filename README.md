@@ -2,6 +2,8 @@
 
 React hook to handle session from your browser local storage
 
+[![NPM](https://nodei.co/npm/xtate.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/xtate)
+
 ## Usage
 
 Import `useSession` from `react-use-session` and pass a function that returns your session object:
