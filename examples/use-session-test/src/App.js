@@ -13,7 +13,7 @@ function App() {
       {
         session ?
           <div>
-            <p>You are logged in as: <code>{session.GivenName}</code>. Your email is: <code>{session.sub}</code></p>
+            <p>You are logged in as: <code>{session.GivenName}</code></p>
             <button onClick={logout}>Log out</button>
           </div>
           :
