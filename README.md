@@ -12,24 +12,38 @@
 
 ## Usage
 
-Import `useSession` from `react-use-session` and pass a function that returns your session object:
+#### Getting session
+
+Import `useSession` from `react-use-session`
 
 ```jsx
 import { useSession } from 'react-use-session';
 
- const user = { name: "Gabriel" };
- const { session } = useSession(() => user);
+ const { session } = useSession();
 
 ```
-You have to tell the hook when it should work, that's why useSession gives you the `login` and `logout` functions:
+
+If there is a session already registered in your browser local storage then it will be returned since your app first render. If there is no session, it will return `null`. 
+
+#### Saving or clearing session
+
+To save a new session object you use the `save` function, to clear the session you use the `clear` function, both functions are given to you by `useSession`.
 
 ```jsx
- const { session, login, logout } = useSession(() => user);
+ const { session, save, clear } = useSession();
 ```
 
-`login` saves the session object to the browser local storage and return it back. `logout` removes the session object from the local storage and returns `null`. `null` is also the initial value, that's how you know the user is not logged in.
+When calling the `clear` function your session will go back to `null`.
 
-Check this simple app with `login` and `logout` functionality:
+#### Auto JSON Web Token Parsing
+
+If you have a string containing a JSON Web Token, instead of calling `save`, you can call `saveJWT`, which will automatically parse the JWT to a Javascript Object, save it in the browser local storage, and return the object back to you.
+
+```jsx
+ const { saveJWT } = useSession();
+```
+
+#### "Show me an example":
 
 ```jsx
 import React from 'react';
@@ -37,21 +51,22 @@ import { useSession } from 'react-use-session';
 
 function App() {
 
-  const user = { name: "Gabriel" };
-  const { session, login, logout } = useSession(() => user);
+  const JSON_WEB_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZWFjdC11c2Utc2Vzc2lvbi1leGFtcGxlIiwiaWF0IjoxNTQxMDgwMjAwLCJleHAiOjE5MTk3Njg0MDAsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwic3ViIjoiZ2FicmllbGJiMDMwNkBnbWFpbC5jb20iLCJHaXZlbk5hbWUiOiJHYWJyaWVsIiwiU3VybmFtZSI6IkJhc2lsaW8gQnJpdG8iLCJSb2xlIjoiQ3JlYXRvciJ9.GK23QsdEgMzGmxCwX9CjEg5lbSztZ7C67vKc7L09KgI";
+
+  const { session, saveJWT, clear } = useSession();
 
   return (
-    <div>
+    <div className="App">
       {
         session ?
           <div>
-            <p> You are logged in as: <code>{session.name}</code> </p>
-            <button onClick={logout}>Log out</button>
+            <p>You are logged in as: <code>{session.GivenName}</code></p>
+            <button onClick={clear}>Log out</button>
           </div>
           :
           <div>
             <p>No session. Please log in</p>
-            <button onClick={login}>Log in</button>
+            <button onClick={() => saveJWT(JSON_WEB_TOKEN)}>Log in</button>
           </div>
 
       }
@@ -60,31 +75,7 @@ function App() {
 }
 
 export default App;
+
 ```
 
 ![Screenshot](https://u.cubeupload.com/GabrielBB/reactusesession.gif)
-
-### JSON Web Token support
-
-What if you have an API that returns a JSON Web Token after you login. Well, just pass the token string to useSession and it will automatically convert it to a Javascript object for you. This is an example passing an asynchronous callback to useSession:
-
-```jsx
-import React from 'react';
-import { useSession, SessionType } from 'react-use-session';
-
-export default () => {
-  const onLogin = async () => await (await fetch('https://api.com/login')).json().token;
-
-  const { session } = useSession(onLogin, { type: SessionType.JWT, autoLogin: true });
-  
-  return (session ? <span>{`Token was parsed to an object. User name is: ${session.sub}`}</span> : 'Authenticating...')
-}
-```
-
-## Parameters
-
- - #### type: SessionType
-    You can pass ```SessionType.JWT``` if you're working with a Json Web Token. The default value is ```SessionType.Object```
-
- - #### autoLogin: boolean
-    useSession will call your ```onLogin``` callback when your app is first rendered, without need to explicitly call ```login```.
