@@ -1,20 +1,10 @@
-import { useState, useEffect } from './react';
-import SessionType from './sessionType';
-import parseJWT from './util/jwt-parse'
+import { useState } from './react';
+import parseJWT from './util/jwt-parse';
 
-class Parameters {
-  type?: SessionType = SessionType.OBJECT;
-  autoLogin?: boolean = false;
+const KEY: string = "_REACT-USE-SESSION-AUTHORIZATION_";
 
-  constructor(params: Parameters) {
-    Object.assign(this, params)
-  }
-}
-
-const KEY: string = "AUTHORIZATION";
-
-function useSession(onLogin: () => Promise<any>, params: Parameters = new Parameters({}))
-  : { session: any, login: () => void, logout: () => void } {
+function useSession()
+  : { session: object | string | null, save: (sessionValue: object | string) => void, saveJWT: (jwt: string) => void, clear: () => void } {
 
   const initialState = () => {
     try {
@@ -22,29 +12,15 @@ function useSession(onLogin: () => Promise<any>, params: Parameters = new Parame
 
       if (localStorageValue != null) {
         // There is a session in the localStorage already
-
-        if (params.type === SessionType.JWT) {
-          // It is a Json Web Token, let's parse it
-          try {
-            return parseJWT(localStorageValue);
-          } catch (ex) {
-            console.warn("SessionType was specified as JWT but value found in local storage could not be parsed to a JSON Web Token. Clearing session from local storage");
-            localStorage.removeItem(KEY);
-          }
-
+        try {
+          const session = JSON.parse(localStorageValue);
+          return session;
+        } catch {
+          // Oops... It seems it wasn't an object, returning as String then
+          return localStorageValue;
         }
-        else {
-          // Session is an object then, let's try to use a simple JSON.parse
-          try {
-            const session = JSON.parse(localStorageValue);
-            return session;
-          } catch {
-            // Oops... It seems it wasn't an object, returning as String then
-            return localStorageValue;
-          }
-        }
-
       }
+
     } catch {
       // If user is in private mode or has storage restriction
       // localStorage can throw.
@@ -54,41 +30,37 @@ function useSession(onLogin: () => Promise<any>, params: Parameters = new Parame
     return null;
   };
 
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState<object | string | null>(initialState);
 
-  const login = async () => {
-    let session = await onLogin();
+  const save = (sessionValue: object | string) => {
 
-    if (params.type === SessionType.JWT) {
-      try {
-        const parsedObject = parseJWT(session);
-        localStorage.setItem(KEY, JSON.stringify(session));
-        setState(parsedObject);
-      } catch (ex) {
-        throw new Error("SessionType was specified as JWT but the value couldn't be parsed to a JWT: " + ex);
-      }
-    } else if (typeof session == "object" || typeof session === "string") {
-      localStorage.setItem(KEY, JSON.stringify(session));
-      setState(session);
+    if (typeof sessionValue == "object" || typeof sessionValue === "string") {
+      localStorage.setItem(KEY, JSON.stringify(sessionValue));
+      setState(sessionValue);
     } else {
       throw new Error("useSession hook only accepts objects or strings as session values");
     }
-
-
   }
 
-  const logout = () => {
+  const saveJWT = (jwt: string) => {
+
+    let parsedObject: any;
+
+    try {
+      parsedObject = parseJWT(jwt);
+    } catch (ex) {
+      throw new Error("Could not parse provided Json Web Token: " + ex);
+    }
+
+    save(parsedObject);
+  }
+
+  const clear = () => {
     localStorage.removeItem(KEY);
     setState(null);
   }
 
-  useEffect(() => {
-    if (params.autoLogin && state == null) {
-      login();
-    }
-  }, [params.autoLogin]);
-
-  return { session: state, login, logout };
+  return { session: state, save, saveJWT, clear };
 };
 
 export default useSession;
