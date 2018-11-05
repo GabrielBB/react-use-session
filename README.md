@@ -12,7 +12,7 @@ react-use-session
 
 </h1>
 
-React hook to handle session from your browser local storage
+React hook to handle session from your browser storage
 
 </div>
 
