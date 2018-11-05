@@ -1,14 +1,14 @@
-import { useState } from './react';
+import { useState, useEffect } from './react';
 import parseJWT from './util/jwt-parse';
 
-function useSession(localStorageKey : string)
+function useSession(localStorageKey: string)
   : { session: object | string | null, save: (sessionValue: object | string) => void, saveJWT: (jwt: string) => void, clear: () => void } {
 
-  if(!localStorageKey) {
+  if (!localStorageKey) {
     throw new Error("localStorageKey was not provided to useSession hook. Example: useSession('facebook-session')");
   }
 
-  const initialState = () => {
+  const getLocalStorageValue = () => {
     try {
       const localStorageValue: string | null = localStorage.getItem(localStorageKey);
 
@@ -24,15 +24,14 @@ function useSession(localStorageKey : string)
       }
 
     } catch {
-      // If user is in private mode or has storage restriction
-      // localStorage can throw.
-      console.error("useSession could not access the browser local storage. Session will be lost when closing React application")
+      // This catch block handles the known issues listed here: https://caniuse.com/#feat=namevalue-storage
+      console.warn("useSession could not access the browser local storage. Session will be lost when closing React application")
     }
 
     return null;
   };
 
-  const [state, setState] = useState<object | string | null>(initialState);
+  const [state, setState] = useState<object | string | null>(getLocalStorageValue);
 
   const save = (sessionValue: object | string) => {
 
@@ -61,6 +60,19 @@ function useSession(localStorageKey : string)
     localStorage.removeItem(localStorageKey);
     setState(null);
   }
+
+  const syncState = (event) => {
+    if (event.key === localStorageKey) {
+      setState(getLocalStorageValue());
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("storage", syncState);
+    return () => {
+      window.removeEventListener("storage", syncState);
+    };
+  }, [localStorageKey]);
 
   return { session: state, save, saveJWT, clear };
 };
