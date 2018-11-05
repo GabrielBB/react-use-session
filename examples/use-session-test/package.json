@@ -9,6 +9,7 @@
     "react-use-session": "^1.0.1"
   },
   "scripts": {
+    "prestart": "npm-link-shared ./node_modules/react-use-session/node_modules . react",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -1,14 +1,16 @@
 import { useState } from './react';
 import parseJWT from './util/jwt-parse';
 
-const KEY: string = "_REACT-USE-SESSION-AUTHORIZATION_";
-
-function useSession()
+function useSession(localStorageKey : string)
   : { session: object | string | null, save: (sessionValue: object | string) => void, saveJWT: (jwt: string) => void, clear: () => void } {
+
+  if(!localStorageKey) {
+    throw new Error("localStorageKey was not provided to useSession hook. Example: useSession('facebook-session')");
+  }
 
   const initialState = () => {
     try {
-      const localStorageValue: string | null = localStorage.getItem(KEY);
+      const localStorageValue: string | null = localStorage.getItem(localStorageKey);
 
       if (localStorageValue != null) {
         // There is a session in the localStorage already
@@ -35,7 +37,7 @@ function useSession()
   const save = (sessionValue: object | string) => {
 
     if (typeof sessionValue == "object" || typeof sessionValue === "string") {
-      localStorage.setItem(KEY, JSON.stringify(sessionValue));
+      localStorage.setItem(localStorageKey, JSON.stringify(sessionValue));
       setState(sessionValue);
     } else {
       throw new Error("useSession hook only accepts objects or strings as session values");
@@ -56,7 +58,7 @@ function useSession()
   }
 
   const clear = () => {
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(localStorageKey);
     setState(null);
   }
 
