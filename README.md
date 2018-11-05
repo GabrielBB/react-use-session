@@ -85,7 +85,8 @@ const { saveJWT } = useSession('my-app');
 
   
 
-## Example:
+
+## Example
 
   
 
