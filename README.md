@@ -169,7 +169,7 @@ export  default  App;
 
 * @param  keepOnWindowClosed This optional parameter will determine if useSession will work with LocalStorage or SessionStorage. Default value is true, so default storage is LocalStorage
 
-* @returns If there is a session in your browser storage then it will be returned. If there is no session, it will return null.
+* @returns If there is a session in your browser storage then it will be returned. If there is no session, it will return null. It also returns 3 functions to handle the session
 
 */
 
