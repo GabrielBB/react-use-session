@@ -1,42 +1,46 @@
 import { useState, useEffect } from './react';
 import parseJWT from './util/jwt-parse';
 
-function useSession(localStorageKey: string)
+function useSession(sessionKey: string, keepOnBrowserClosed: boolean = true)
   : { session: object | string | null, save: (sessionValue: object | string) => void, saveJWT: (jwt: string) => void, clear: () => void } {
 
-  if (!localStorageKey) {
-    throw new Error("localStorageKey was not provided to useSession hook. Example: useSession('facebook-session')");
+  if (!sessionKey) {
+    throw new Error("sessionKey was not provided to useSession hook. Example: useSession('facebook-session')");
   }
 
-  const getLocalStorageValue = () => {
-    try {
-      const localStorageValue: string | null = localStorage.getItem(localStorageKey);
+  const getStorage = (): Storage => {
+    return keepOnBrowserClosed ? localStorage : sessionStorage;
+  }
 
-      if (localStorageValue != null) {
-        // There is a session in the localStorage already
+  const getStorageValue = () => {
+    try {
+      const storageValue: string | null = getStorage().getItem(sessionKey);
+
+      if (storageValue != null) {
+        // There is a session in the storage already
         try {
-          const session = JSON.parse(localStorageValue);
+          const session = JSON.parse(storageValue);
           return session;
         } catch {
           // Oops... It seems it wasn't an object, returning as String then
-          return localStorageValue;
+          return storageValue;
         }
       }
 
     } catch {
       // This catch block handles the known issues listed here: https://caniuse.com/#feat=namevalue-storage
-      console.warn("useSession could not access the browser local storage. Session will be lost when closing React application")
+      console.warn("useSession could not access the browser storage. Session will be lost when closing browser window")
     }
 
     return null;
   };
 
-  const [state, setState] = useState<object | string | null>(getLocalStorageValue);
+  const [state, setState] = useState<object | string | null>(getStorageValue);
 
   const save = (sessionValue: object | string) => {
 
     if (typeof sessionValue == "object" || typeof sessionValue === "string") {
-      localStorage.setItem(localStorageKey, JSON.stringify(sessionValue));
+      getStorage().setItem(sessionKey, JSON.stringify(sessionValue));
       setState(sessionValue);
     } else {
       throw new Error("useSession hook only accepts objects or strings as session values");
@@ -57,13 +61,13 @@ function useSession(localStorageKey: string)
   }
 
   const clear = () => {
-    localStorage.removeItem(localStorageKey);
+    getStorage().removeItem(sessionKey);
     setState(null);
   }
 
   const syncState = (event) => {
-    if (event.key === localStorageKey) {
-      setState(getLocalStorageValue());
+    if (event.key === sessionKey) {
+      setState(getStorageValue());
     }
   }
 
@@ -72,7 +76,7 @@ function useSession(localStorageKey: string)
     return () => {
       window.removeEventListener("storage", syncState);
     };
-  }, [localStorageKey]);
+  }, [sessionKey]);
 
   return { session: state, save, saveJWT, clear };
 };
