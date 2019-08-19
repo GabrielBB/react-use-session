@@ -46,7 +46,7 @@ function useSession(sessionKey: string, keepOnWindowClosed: boolean = true)
   const save = (sessionValue: object | string) => {
 
     if (typeof sessionValue == "object" || typeof sessionValue === "string") {
-      getStorage().setItem(sessionKey, JSON.stringify(sessionValue));
+      getStorage().setItem(sessionKey, typeof sessionValue == "object" ? JSON.stringify(sessionValue) : sessionValue);
       setState(sessionValue);
     } else {
       throw new Error("useSession hook only accepts objects or strings as session values");
@@ -59,6 +59,7 @@ function useSession(sessionKey: string, keepOnWindowClosed: boolean = true)
 
     try {
       parsedObject = parseJWT(jwt);
+      parsedObject.token = jwt;
     } catch (ex) {
       throw new Error("Could not parse provided Json Web Token: " + ex);
     }
