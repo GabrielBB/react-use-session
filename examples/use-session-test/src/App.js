@@ -15,9 +15,6 @@ function App() {
           <p>
             You are logged in as: <code>{session.GivenName}</code>
           </p>
-          <p>
-            The parsed token is: <code>{session.token}</code>
-          </p>
           <button onClick={clear}>Log out</button>
         </div>
       ) : (
